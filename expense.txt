@@ -1,0 +1,4 @@
+12|eggs
+23|food
+23|coca-cola
+34|springwatter
