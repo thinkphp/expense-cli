@@ -71,6 +71,20 @@ fn list_expenses(expenses: &[Expense]) {
      }
 }
 
+fn update_expense( expenses: &mut [Expense], number: usize, amount: f64, category: String ) -> bool {
+
+   let Some(expense) = number.checked_sub(1).and_then(|i| expenses.get_mut(i)) else {
+
+      return false;
+   };
+
+   expense.amount = amount;
+
+   expense.category = category ;
+
+   true
+}
+
 fn main() {
 
    let args: Vec<String> = env::args().collect();
@@ -83,6 +97,7 @@ fn main() {
       println!("Usage: ");
       println!("  expense add <amount> <category> ");
       println!("  expense add total");
+      println!("  expense update <number> <amount> <category>");
       println!("  expense list");
       return;
    } 
@@ -133,6 +148,40 @@ fn main() {
          "total" => {
 
                 println!("Total expenses: {:.2}", total_expenses( &expenses ));
+         }
+
+         "update" => {
+
+               if args.len() != 5 {
+                  println!("Usage: expense update <number> <amount> <category>");
+                  return;
+               }
+
+               let number: usize = match args[2].parse() {
+                  Ok(value) => value,
+                  Err(_) => {
+                     println!("Invalid value");
+                     return;
+                  }
+               };
+
+               let amount:f64 = match args[3].parse() {
+                  Ok(value) => value,
+                  Err(_) => {
+                     println!("Invalid value");
+                     return;
+                  }
+               };
+
+               if update_expense(&mut expenses, number, amount, args[4].clone()) {
+
+                  save_expenses(&expenses);
+                  println!("Expense updated!");
+
+               } else {
+
+                  println!("Expense number not found.");
+               }
          }
 
          _ => {
