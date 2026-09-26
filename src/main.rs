@@ -20,6 +20,11 @@ fn save_expenses(expenses: &[Expense]) {
    .expect("Could not save expenses.");
 }
 
+fn total_expenses(expenses: &[Expense]) -> f64 {
+
+       expenses.iter().map(|expense| expense.amount).sum()
+}
+
 fn load_expenses() -> Vec<Expense> {
 
    let content = match fs::read_to_string("expense.txt") {
@@ -77,6 +82,7 @@ fn main() {
 
       println!("Usage: ");
       println!("  expense add <amount> <category> ");
+      println!("  expense add total");
       println!("  expense list");
       return;
    } 
@@ -123,6 +129,11 @@ fn main() {
             list_expenses( &expenses );
 
          } 
+
+         "total" => {
+
+                println!("Total expenses: {:.2}", total_expenses( &expenses ));
+         }
 
          _ => {
             println!("Invalid command");
